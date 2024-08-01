@@ -27,42 +27,37 @@ public class Main {
         	int node2 = Integer.parseInt(st.nextToken());
         	
         	int ans = 0;
-        	
-            ArrayList<Integer> p1dst = new ArrayList<>();
-            ArrayList<Integer> p2dst = new ArrayList<>();
-
-            int dst = node1;
-            while (dst != 0) {
-                p1dst.add(dst);
-                if (tree[dst].isEmpty()) {
-                	dst = 0;
-                	break;
-                }
-                dst = tree[dst].get(0);
-            }
-
-            dst = node2;
-            while (dst != 0) {
-                p2dst.add(dst);
-                if (tree[dst].isEmpty()) {
-                	dst = 0;
-                	break;
-                }
-                dst = tree[dst].get(0);
-            }
-
-            int len1 = p1dst.size(), len2 = p2dst.size();
+        	List<Integer> n1_li = bfs(N, node1, tree);
+        	List<Integer> n2_li = bfs(N, node2, tree);
+        	int len1 = n1_li.size(), len2 = n2_li.size();
         	int min_len = Math.min(len1, len2);
         	for (int i = 1; i <= min_len; i++) {
-        		if (p1dst.get(len1-i).equals(p2dst.get(len2-i))) {
-        			ans = p1dst.get(len1-i);
+        		if (n1_li.get(len1-i).equals(n2_li.get(len2-i))) {
+        			ans = n1_li.get(len1-i);
         		}
         	}
-        
         	System.out.println(ans);
         }
 
 	}
     
+    public static List<Integer> bfs(int N, int node, List<Integer>[] tree) {
+    	List<Integer> result = new ArrayList<>();
+    	int[] visited = new int[N+1];
+    	Queue<Integer> q = new LinkedList<>();
+    	q.add(node);
+    	result.add(node);
+    	while (!q.isEmpty()) {
+    		int x = q.poll();
+    		visited[x] = 1;
+    		for (int next : tree[x]) {
+    			if (visited[next] == 0) {
+    				visited[next] = 1;
+    				result.add(next);
+    				q.add(next);
+    			}
+    		}
+    	}
+		return result;
+    }
 }
-
