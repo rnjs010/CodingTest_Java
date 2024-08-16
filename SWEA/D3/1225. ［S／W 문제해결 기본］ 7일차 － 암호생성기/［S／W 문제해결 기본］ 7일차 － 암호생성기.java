@@ -12,11 +12,8 @@ class Solution
             int N = Integer.parseInt(br.readLine());
             StringTokenizer st = new StringTokenizer(br.readLine());
             Queue<Integer> q = new LinkedList<>();
-            for (int i = 0; i < 8; i++) {
-            	q.add(Integer.parseInt(st.nextToken()));
-            }
+            for (int i = 0; i < 8; i++) q.add(Integer.parseInt(st.nextToken()));
             
-            int num = 1;
             boolean chk = true;
             while(chk) {
             	for (int j = 1; j < 6; j++) {
@@ -33,9 +30,7 @@ class Solution
             
             StringBuilder sb = new StringBuilder();
             for (int i : q) {
-            	if (sb.length() > 0) {
-            		sb.append(" ");
-            	}
+            	if (sb.length() > 0) sb.append(" ");
             	sb.append(i);
             }
             System.out.println("#" + tc + " " + sb.toString());           
