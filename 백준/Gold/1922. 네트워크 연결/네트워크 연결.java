@@ -38,7 +38,9 @@ public class Main {
 
     public static int find(int a) {
         if (parent[a] == a) return a;
-        return find(parent[a]);
+        int root_node = find(parent[a]);
+        parent[a] = root_node;
+        return root_node;
     }
 
     public static void kruskal() {
