@@ -4,10 +4,11 @@ class Solution {
         int answer = r;
         
         while (l < r) {
-            int mid = (l + r) / 2;
+            int mid = l + (r - l) / 2;
             long res = gameTime(mid, diffs, times);
             if (res <= limit) {
-                answer = Math.min(answer, mid);
+                // answer = Math.min(answer, mid);
+                answer = mid;
                 r = mid;
             } else {
                 l = mid + 1;
