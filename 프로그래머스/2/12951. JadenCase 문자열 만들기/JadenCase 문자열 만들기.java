@@ -1,14 +1,17 @@
 class Solution {
-  public String solution(String s) {
-        String answer = "";
-        String[] str = s.toLowerCase().split("");
+    public String solution(String s) {
+        StringBuilder sb = new StringBuilder();
         boolean isStart = true;
 
-        for(String ss : str) {
-            answer += isStart ? ss.toUpperCase() : ss;
-            isStart = ss.equals(" ") ? true : false;
+        for (char c : s.toCharArray()) {
+            if (c == ' ') {
+                sb.append(c);
+                isStart = true;
+            } else {
+                sb.append(isStart ? Character.toUpperCase(c) : Character.toLowerCase(c));
+                isStart = false;
+            }
         }
-
-        return answer;
-  }
+        return sb.toString();
+    }
 }
