@@ -7,8 +7,7 @@ class Solution {
         
         Arrays.sort(people);
         while (l <= r) {
-            int sum = people[l] + people[r];
-            if (sum <= limit) {
+            if (people[l] + people[r] <= limit) {
                 l++;
             }
             r--;
