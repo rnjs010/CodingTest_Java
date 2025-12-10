@@ -9,8 +9,8 @@ class Solution {
             cnt.put(i, cnt.getOrDefault(i, 0) + 1);
         }
         
-        List<Integer> cntList = new ArrayList(cnt.values());
-        Collections.sort(cntList, Comparator.reverseOrder());
+        List<Integer> cntList = new ArrayList<>(cnt.values());
+        cntList.sort(Comparator.reverseOrder());
         
         int sum = 0;
         for (int i: cntList) {
