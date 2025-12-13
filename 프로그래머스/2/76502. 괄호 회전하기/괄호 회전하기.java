@@ -1,36 +1,42 @@
 import java.util.*;
 
 class Solution {
-    static String ss;
+    static Deque<Character> stack = new ArrayDeque<>();
+
     public int solution(String s) {
+        int n = s.length();
+        if (n % 2 == 1) return 0;
         int answer = 0;
-        ss = s + s;
-        for (int i = 0; i < s.length(); i++) {
-            if (check(i)) answer++;
+
+        for (int start = 0; start < n; start++) {
+            char first = s.charAt(start);
+            if (first == ')' || first == ']' || first == '}') continue;
+            
+            if (check(s, start, n)) answer++;
         }
-        
         return answer;
     }
-    
-    static public boolean check(int x) {
-        Deque<Character> dq = new ArrayDeque<>();
-        for (int i = x; i < x + ss.length() / 2; i++) {
-            char c = ss.charAt(i);
-            if (c == '{' || c == '[' || c == '(') {
-                dq.offerLast(c);
+
+    static boolean check(String s, int start, int n) {
+        stack.clear();
+
+        for (int i = 0; i < n; i++) {
+            char c = s.charAt((start + i) % n);
+            if (c == '(' || c == '[' || c == '{') {
+                stack.offerLast(c);
             } else {
-                if (dq.isEmpty()) {
-                    return false;
-                }
-                char top = dq.peekLast();
-                if ((top == '{' && c == '}') || (top == '[' && c == ']') || (top == '(' && c == ')')) {
-                    dq.pollLast();
-                } else {
-                    return false;
-                }
+                if (stack.isEmpty()) return false;
+
+                char top = stack.pollLast();
+                if (!isMatch(top, c)) return false;
             }
         }
-        if (!dq.isEmpty()) return false;
-        return true;
+        return stack.isEmpty();
+    }
+
+    static boolean isMatch(char open, char close) {
+        return (open == '(' && close == ')') ||
+               (open == '[' && close == ']') ||
+               (open == '{' && close == '}');
     }
 }
