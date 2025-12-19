@@ -12,13 +12,11 @@ class Solution {
         for (int i = 0; i < topping.length - 1; i++) {
             int key = topping[i];
             lMap.put(key, lMap.getOrDefault(key, 0) + 1);
-            int cnt = rMap.get(key);
-            if (cnt > 1) {
-                rMap.put(key, cnt - 1);
-            } else {
+            rMap.put(key, rMap.get(key) - 1);
+            if (rMap.get(key) == 0) {
                 rMap.remove(key);
             }
-            
+
             if (lMap.size() == rMap.size()) answer++;
         }
         return answer;
