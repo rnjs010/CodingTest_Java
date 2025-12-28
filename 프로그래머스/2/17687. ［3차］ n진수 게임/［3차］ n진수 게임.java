@@ -1,26 +1,21 @@
-import java.util.*;
-
 class Solution {
     public String solution(int n, int t, int m, int p) {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder answer = new StringBuilder(t);
         
-        int len = 0, a = 0;
-        int maxL = p + m * (t - 1);
-        while (len < maxL) {
-            String s = Integer.toString(a, n);
-            sb.append(s);
-            a++;
-            len += s.length();
+        int num = 0;
+        int order = 0;
+
+        while (answer.length() < t) {
+            String s = Integer.toString(num++, n).toUpperCase();
+            
+            for (int i = 0; i < s.length(); i++) {
+                if (order % m == p - 1) {
+                    answer.append(s.charAt(i));
+                    if (answer.length() == t) break;
+                }
+                order++;
+            }
         }
-        
-        String all = sb.toString();
-        sb.setLength(0);
-        
-        for (int i = p; i <= maxL; i += m) {
-            sb.append(all.charAt(i - 1));
-        }
-        String answer = sb.toString().toUpperCase();
-        
-        return answer;
+        return answer.toString();
     }
 }
