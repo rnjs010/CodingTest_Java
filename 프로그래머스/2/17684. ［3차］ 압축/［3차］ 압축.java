@@ -2,43 +2,32 @@ import java.util.*;
 
 class Solution {
     public int[] solution(String msg) {
-        List<Integer> ans = new ArrayList<>();
+        List<Integer> res = new ArrayList<>();
         
         Map<String, Integer> dict = new HashMap<>();
-        for (int i = 1; i <= 26; i++) {
-            String a = "";
-            a += (char) (64 + i);
-            dict.put(a, i);
+        for (int i = 0; i < 26; i++) {
+            dict.put(String.valueOf((char) ('A' + i)), i + 1);
         }
         
-        int s = 0, e = 0, find = 0, last = 27;
-        while (e < msg.length()) {
-            while (true) {
-                String sub = msg.substring(s, e + 1);
+        int s = 0, find = 0, last = 27;
+        while (s < msg.length()) {
+            int e = s + 1;
             
-                if (dict.containsKey(sub)) {
-                    find = dict.get(sub);
-                    e++;
-                    if (e == msg.length()) {
-                        ans.add(find);
-                        break;
-                    }
-                } else {
-                    ans.add(find);
-                    dict.put(sub, last++);
-                    s = e;
-                    break;
-                }
+            while (e <= msg.length() && dict.containsKey(msg.substring(s, e))) {
+                e++;
             }
             
+            String w = msg.substring(s, e - 1);
+            res.add(dict.get(w));
+            
+            if (e <= msg.length()) {
+                String wc = msg.substring(s, e);
+                dict.put(wc, last++);
+            }
+
+            s = e - 1;
         }
         
-        int n = ans.size();
-        int[] answer = new int[n];
-        for (int i = 0; i < n; i++) {
-            answer[i] = ans.get(i);
-        }
-        
-        return answer;
+        return res.stream().mapToInt(i -> i).toArray();
     }
 }
