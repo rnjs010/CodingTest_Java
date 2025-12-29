@@ -1,31 +1,62 @@
 import java.util.*;
 
 class Solution {
+
+    // Trie 노드 정의
+    static class TrieNode {
+        TrieNode[] children = new TrieNode[26];
+        int index;
+    }
+
     public int[] solution(String msg) {
-        Map<String, Integer> dict = new HashMap<>();
-        for (int i = 0; i < 26; i++) {
-            dict.put(String.valueOf((char)('A' + i)), i + 1);
-        }
-
         List<Integer> result = new ArrayList<>();
-        int nextIndex = 27;
 
-        StringBuilder w = new StringBuilder();
-        for (int i = 0; i < msg.length(); i++) {
-            w.append(msg.charAt(i));
+        // 1. Trie 초기화
+        TrieNode root = new TrieNode();
+        int nextIndex = 1;
 
-            if (!dict.containsKey(w.toString())) {
-                String prev = w.substring(0, w.length() - 1);
-                result.add(dict.get(prev));
-
-                dict.put(w.toString(), nextIndex++);
-
-                w.setLength(0);
-                w.append(msg.charAt(i));
-            }
+        // 사전에 A~Z 등록
+        for (char c = 'A'; c <= 'Z'; c++) {
+            TrieNode node = new TrieNode();
+            node.index = nextIndex++;
+            root.children[c - 'A'] = node;
         }
 
-        result.add(dict.get(w.toString()));
-        return result.stream().mapToInt(i -> i).toArray();
+        int i = 0;
+
+        // 2. 메시지 탐색
+        while (i < msg.length()) {
+            TrieNode current = root;
+            int lastIndex = 0;
+            int j = i;
+
+            // 사전에 존재하는 가장 긴 문자열 탐색
+            while (j < msg.length()) {
+                char c = msg.charAt(j);
+                if (current.children[c - 'A'] == null) {
+                    break;
+                }
+                current = current.children[c - 'A'];
+                lastIndex = current.index;
+                j++;
+            }
+
+            // 3. 가장 긴 문자열의 사전 번호 출력
+            result.add(lastIndex);
+
+            // 4. 새로운 문자열 (w + c) 사전에 추가
+            if (j < msg.length()) {
+                char nextChar = msg.charAt(j);
+                TrieNode newNode = new TrieNode();
+                newNode.index = nextIndex++;
+                current.children[nextChar - 'A'] = newNode;
+            }
+
+            // 5. 처리한 만큼 인덱스 이동
+            i = j;
+        }
+
+        // List → 배열 변환
+        return result.stream().mapToInt(n -> n).toArray();
     }
 }
