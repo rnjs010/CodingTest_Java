@@ -2,9 +2,12 @@ import java.util.*;
 
 class Solution {
     List<Integer>[] graph;
-    int cnt;
+    int answer, n;
     
     public int solution(int n, int[][] wires) {
+        this.n = n;
+        answer = Integer.MAX_VALUE;
+        
         graph = new ArrayList[n + 1];
         for (int i = 1; i <= n; i++) {
             graph[i] = new ArrayList<>();
@@ -15,29 +18,23 @@ class Solution {
             graph[w[1]].add(w[0]);
         }
         
-        int answer = Integer.MAX_VALUE;
-        
-        for (int[] w: wires) {
-            boolean[] visit = new boolean[n + 1];
-            cnt = 0;
-            
-            dfs(w[0], visit, w[0], w[1]);
-            answer = Math.min(answer, Math.abs(n - 2 * cnt));
-        }
+        dfs(1, 0);
         
         return answer;
     }
     
-    void dfs(int cur, boolean[] visit, int cutA, int cutB) {
-        visit[cur] = true;
-        cnt++;
+    int dfs(int cur, int parent) {
+        int size = 1;
         
         for (int next: graph[cur]) {
-            if (visit[next]) continue;
+            if (next == parent) continue;
+            int childSize = dfs(next, cur);
             
-            if ((cur == cutA && next == cutB) || (cur == cutB && next == cutA)) continue;
+            answer = Math.min(answer, Math.abs(n - 2 * childSize));
             
-            dfs(next, visit, cutA, cutB);
+            size += childSize;
         }
+        
+        return size;
     }
 }
