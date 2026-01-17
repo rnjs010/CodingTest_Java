@@ -10,11 +10,11 @@ class Solution {
         
         @Override
         public int compareTo(Node o) {
-            return this.cost - o.cost;
+            return Integer.compare(this.cost, o.cost);
         }
     }
     
-    static final int INF = Integer.MAX_VALUE;
+    static final int INF = 1_000_000;
     static List<Node>[] graph;
     static int[] dist;
     
