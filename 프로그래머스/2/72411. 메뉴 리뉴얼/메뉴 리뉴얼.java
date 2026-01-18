@@ -2,15 +2,19 @@ import java.util.*;
 
 class Solution {
     public String[] solution(String[] orders, int[] course) {
+        String[] sortedOrders = new String[orders.length];
+        for (int i = 0; i < orders.length; i++) {
+            char[] ch = orders[i].toCharArray();
+            Arrays.sort(ch);
+            sortedOrders[i] = new String(ch);
+        }
+        
         List<String> ans = new ArrayList<>();
         
         for (int c: course) {
             Map<String, Integer> map = new HashMap<>();
-            for (String o: orders) {
-                char[] ch = o.toCharArray();
-                Arrays.sort(ch);
-                String sortO = new String(ch);
-                comb(sortO, c, 0, new StringBuilder(), map);
+            for (String o: sortedOrders) {
+                comb(o, c, 0, new StringBuilder(), map);
             }
             
             int max = 0;
