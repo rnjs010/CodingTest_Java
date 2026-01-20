@@ -42,8 +42,8 @@ class Solution {
                     int cy = ny + dy[d];
                     if (0 > cx || n <= cx || 0 > cy || m <= cy) break;
                     if (map[cx][cy] == 'D') break;
-                    nx += dx[d];
-                    ny += dy[d];
+                    nx = cx;
+                    ny = cy;
                 }
                 
                 if (visit[nx][ny] == 0) {
