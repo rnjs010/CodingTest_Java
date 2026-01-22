@@ -11,20 +11,17 @@ class Solution {
             List<String> infoArr = splitMusic(info[3]);
             int time = changeTime(info[0], info[1]);
             int mLen = mArr.size(), infoLen = infoArr.size();
-            boolean chk = false;
+            boolean chk = true;
             if (time - mLen < 0) continue;
             for (int i = 0; i <= time - mLen; i++) {
-                boolean match = true;
+                chk = true;
                 for (int j = 0; j < mLen; j++) {
                     if (!mArr.get(j).equals(infoArr.get((i + j) % infoLen))) {
-                        match = false;
+                        chk = false;
                         break;
                     }
                 }
-                if (match) {
-                    chk = true;
-                    break;
-                }
+                if (chk) break;
             }
             
             if (chk && (maxT < time)) {
