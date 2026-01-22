@@ -2,39 +2,32 @@ import java.util.*;
 
 class Solution {
     public String solution(String m, String[] musicinfos) {
-        List<String> mArr = splitMusic(m);
-        
-        String answer = "";
+        m = editMusic(m);
+
+        String answer = "(None)";
         int maxT = 0;
-        for (String s: musicinfos) {
+        for (String s : musicinfos) {
             String[] info = s.split(",");
-            List<String> infoArr = splitMusic(info[3]);
+
             int time = changeTime(info[0], info[1]);
-            int mLen = mArr.size(), infoLen = infoArr.size();
-            boolean chk = true;
-            if (time - mLen < 0) continue;
-            for (int i = 0; i <= time - mLen; i++) {
-                chk = true;
-                for (int j = 0; j < mLen; j++) {
-                    if (!mArr.get(j).equals(infoArr.get((i + j) % infoLen))) {
-                        chk = false;
-                        break;
-                    }
-                }
-                if (chk) break;
+            if (time <= maxT) continue;
+
+            String infoMusic = editMusic(info[3]);
+
+            StringBuilder played = new StringBuilder();
+            for (int i = 0; i < time; i++) {
+                played.append(infoMusic.charAt(i % infoMusic.length()));
             }
-            
-            if (chk && (maxT < time)) {
+
+            if (played.toString().contains(m)) {
                 maxT = time;
                 answer = info[2];
             }
         }
-        
-        if (answer.equals("")) answer = "(None)";
-        
+
         return answer;
     }
-    
+
     public int changeTime(String start, String end) {
         String[] s = start.split(":");
         String[] e = end.split(":");
@@ -42,17 +35,15 @@ class Solution {
         int et = Integer.parseInt(e[0]) * 60 + Integer.parseInt(e[1]);
         return et - st;
     }
-    
-    public List<String> splitMusic(String str) {
-        List<String> music = new ArrayList<>(); 
-        for (int i = 0; i < str.length(); i++) {
-            if (str.charAt(i) == '#') continue;
-            if (i != str.length() - 1 && str.charAt(i + 1) == '#') {
-                music.add(str.substring(i, i + 2));
-            } else {
-                music.add(str.substring(i, i + 1));
-            }
-        }
-        return music;
+
+    public String editMusic(String str) {
+        str = str.replaceAll("C#", "V");
+        str = str.replaceAll("D#", "W");
+        str = str.replaceAll("F#", "X");
+        str = str.replaceAll("G#", "Y");
+        str = str.replaceAll("A#", "Z");
+        str = str.replaceAll("E#", "v");
+        str = str.replaceAll("B#", "w");
+        return str;
     }
 }
