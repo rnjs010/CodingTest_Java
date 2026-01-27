@@ -11,18 +11,13 @@ class Solution {
             return Integer.compare(o2[0], o1[0]);
         });
         
-        List<Integer> arr = new ArrayList<>();
+        int answer = 0;
         for (int i = row_begin; i < row_end; i++) {
             int sum = 0;
             for (int num: data[i]) {
                 sum += num % (i + 1);
             }
-            arr.add(sum);
-        }
-        
-        int answer = arr.get(0);
-        for (int i = 1; i < arr.size(); i++) {
-            answer = answer ^ arr.get(i);
+            answer ^= sum;
         }
         
         return answer;
