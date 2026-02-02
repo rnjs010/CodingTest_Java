@@ -15,10 +15,7 @@ class Solution {
     }
     
     public void hanoi(int n, int s, int e, int m) {
-        if (n == 1) {
-            res.add(new int[] {s, e});
-            return;
-        }
+        if (n == 0) return;
         
         hanoi(n - 1, s, m, e);
         res.add(new int[] {s, e});
