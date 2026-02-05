@@ -3,36 +3,51 @@ import java.util.*;
 class Solution {
     public int solution(int[] picks, String[] minerals) {
         int can = picks[0] + picks[1] + picks[2];
-        int maxM = Math.min(minerals.length, can * 5);
         
-        int[][] mArr = new int[can][3];
-        for (int i = 0; i < maxM; i++) {
-            int idx = i / 5;
-            switch(minerals[i]) {
-                case "diamond": mArr[idx][0]++; break;
-                case "iron": mArr[idx][1]++; break;
-                case "stone": mArr[idx][2]++; break;
-            }
+        Map<String, Integer>[] mArr = new HashMap[can];
+        for (int i = 0; i < can; i++) {
+            mArr[i] = new HashMap<>();
         }
-
+        
+        int maxM = Math.min(minerals.length, can * 5);
+        for (int i = 0; i < maxM; i++) {
+            int g = i / 5;
+            mArr[g].put(minerals[i],
+                mArr[g].getOrDefault(minerals[i], 0) + 1
+            );
+        }
+        
         Arrays.sort(mArr, (a, b) -> {
-            if (a[0] != b[0]) return b[0] - a[0];
-            if (a[1] != b[1]) return b[1] - a[1];
-            return b[2] - a[2];
+            int d = b.getOrDefault("diamond", 0) - a.getOrDefault("diamond", 0);
+            if (d != 0) return d;
+
+            int i = b.getOrDefault("iron", 0) - a.getOrDefault("iron", 0);
+            if (i != 0) return i;
+
+            return b.getOrDefault("stone", 0) - a.getOrDefault("stone", 0);
         });
         
-        int[][] map = {{1, 1, 1}, {5, 1, 1}, {25, 5, 1}};
-        
         int answer = 0;
-        int groupIdx = 0;
+        int idx = 0;
         for (int tool = 0; tool < 3; tool++) {
-            for (int cnt = 0; cnt < picks[tool] && groupIdx < can; cnt++) {
-                for (int i = 0; i < 3; i++) {
-                    answer += mArr[groupIdx][i] * map[tool][i];
+            for (int cnt = 0; cnt < picks[tool] && idx < can; cnt++) {
+                Map<String, Integer> cur = mArr[idx];
+
+                int dia = cur.getOrDefault("diamond", 0);
+                int iron = cur.getOrDefault("iron", 0);
+                int stone = cur.getOrDefault("stone", 0);
+
+                if (tool == 0) {
+                    answer += dia + iron + stone;
+                } else if (tool == 1) {
+                    answer += dia * 5 + iron + stone;
+                } else {
+                    answer += dia * 25 + iron * 5 + stone;
                 }
-                groupIdx++;
+                idx++;
             }
         }
+        
         return answer;
     }
 }
