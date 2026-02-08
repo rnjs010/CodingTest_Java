@@ -64,11 +64,10 @@ class Solution {
                 if (0 > nx || (n + 2) <= nx || 0 > ny || (m + 2) <= ny) continue;
                 if (seen[nx][ny]) continue;
                 
+                seen[nx][ny] = true;
                 if (visit[nx][ny]) {
-                    seen[nx][ny] = true;
                     dq.offer(new int[] {nx, ny});
                 } else if (map[nx][ny] == target) {
-                    seen[nx][ny] = true;
                     visit[nx][ny] = true;
                 }
             }
