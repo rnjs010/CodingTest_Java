@@ -29,10 +29,10 @@ class Solution {
     private boolean check() {
         for (int i = 0; i < qq.length; i++) {
             int cnt = 0;
-            for (int a: arr) {
-                for (int b: qq[i]) {
-                    if (a == b) cnt++;
-                }
+            boolean[] exist = new boolean[nn + 1];
+            for (int x : arr) exist[x] = true;
+            for (int x : qq[i]) {
+                if (exist[x]) cnt++;
             }
             
             if (cnt != res[i]) return false;
