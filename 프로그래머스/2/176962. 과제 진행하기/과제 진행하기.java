@@ -1,83 +1,66 @@
 import java.util.*;
 
 class Solution {
-    class Work implements Comparable<Work> {
+    static class Work {
         String name;
-        int start, run;
-        
-        public Work(String name, int start, int run) {
+        int start;
+        int remain;
+
+        Work(String name, int start, int remain) {
             this.name = name;
             this.start = start;
-            this.run = run;
-        }
-        
-        @Override
-        public int compareTo(Work w) {
-            return Integer.compare(this.start, w.start);
+            this.remain = remain;
         }
     }
-    
-    PriorityQueue<Work> pq = new PriorityQueue<>();
-    
+
     public String[] solution(String[][] plans) {
-        for (String[] p: plans) {
-            change(p);
+        List<Work> list = new ArrayList<>();
+        for (String[] p : plans) {
+            String[] t = p[1].split(":");
+            int start = Integer.parseInt(t[0]) * 60 + Integer.parseInt(t[1]);
+            int time = Integer.parseInt(p[2]);
+            list.add(new Work(p[0], start, time));
         }
-        
-        List<String> ans = new ArrayList<>();
-        Deque<Work> wait = new ArrayDeque<>();
-        int curT = 0;
-        while(!pq.isEmpty()) {
-            Work cur = pq.poll();
-            curT = cur.start;
-            if (pq.isEmpty()) {
-                ans.add(cur.name);
-                break;
-            }
-            Work next = pq.peek();
-            if (curT + cur.run == next.start) {
-                ans.add(cur.name);
-                continue;
-            } else if (curT + cur.run > next.start) {
-                int left = cur.run - (next.start - curT);
-                wait.offer(new Work(cur.name, cur.start, left));
-                continue;
-            } else {
-                curT += cur.run;
-                ans.add(cur.name);
-                while (!wait.isEmpty()) {
-                    Work w = wait.pollLast();
-                    if (curT + w.run == next.start) {
-                        ans.add(w.name);
-                        break;
-                    } else if (curT + w.run > next.start) {
-                        int left = w.run - (next.start - curT);
-                        wait.offer(new Work(w.name, w.start, left));
-                        break;
+
+        list.sort(Comparator.comparingInt(w -> w.start));
+
+        Stack<Work> stack = new Stack<>();
+        List<String> result = new ArrayList<>();
+        int currentTime;
+
+        for (int i = 0; i < list.size(); i++) {
+            Work current = list.get(i);
+            currentTime = current.start;
+
+            int nextStart = (i + 1 < list.size()) ? list.get(i + 1).start : Integer.MAX_VALUE;
+            int availableTime = nextStart - currentTime;
+
+            if (current.remain <= availableTime) {
+                result.add(current.name);
+                int freeTime = availableTime - current.remain;
+
+                while (!stack.isEmpty() && freeTime > 0) {
+                    Work prev = stack.pop();
+                    if (prev.remain <= freeTime) {
+                        freeTime -= prev.remain;
+                        result.add(prev.name);
                     } else {
-                        ans.add(w.name);
-                        curT += w.run;
+                        prev.remain -= freeTime;
+                        stack.push(prev);
+                        freeTime = 0;
                     }
                 }
+
+            } else {
+                current.remain -= availableTime;
+                stack.push(current);
             }
         }
-        
-        while (!wait.isEmpty()) {
-            ans.add(wait.pollLast().name);
+
+        while (!stack.isEmpty()) {
+            result.add(stack.pop().name);
         }
-        
-        String[] answer = new String[ans.size()];
-        for (int i = 0; i < ans.size(); i++) {
-            answer[i] = ans.get(i);
-        }
-        return answer;
-    }
-    
-    public void change(String[] plan) {
-        String[] str = plan[1].split(":");
-        int start = Integer.parseInt(str[0]) * 60 + Integer.parseInt(str[1]);
-        int run = Integer.parseInt(plan[2]);
-        pq.add(new Work(plan[0], start, run));
-        return;
+
+        return result.toArray(new String[0]);
     }
 }
