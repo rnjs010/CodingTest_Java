@@ -1,66 +1,70 @@
 import java.util.*;
 
 class Solution {
-    static class Work {
+    class Work implements Comparable<Work> {
         String name;
-        int start;
-        int remain;
-
-        Work(String name, int start, int remain) {
+        int start, run;
+        
+        public Work(String name, int start, int run) {
             this.name = name;
             this.start = start;
-            this.remain = remain;
+            this.run = run;
+        }
+        
+        @Override
+        public int compareTo(Work w) {
+            return Integer.compare(this.start, w.start);
         }
     }
-
+    
     public String[] solution(String[][] plans) {
-        List<Work> list = new ArrayList<>();
-        for (String[] p : plans) {
-            String[] t = p[1].split(":");
-            int start = Integer.parseInt(t[0]) * 60 + Integer.parseInt(t[1]);
-            int time = Integer.parseInt(p[2]);
-            list.add(new Work(p[0], start, time));
+        PriorityQueue<Work> pq = new PriorityQueue<>();
+        for (String[] p: plans) {
+            String[] str = p[1].split(":");
+            int start = Integer.parseInt(str[0]) * 60 + Integer.parseInt(str[1]);
+            int run = Integer.parseInt(p[2]);
+            pq.add(new Work(p[0], start, run));
         }
+        
+        List<String> ans = new ArrayList<>();
+        Deque<Work> wait = new ArrayDeque<>();
+        int curT = 0;
+        while (!pq.isEmpty()) {
+            Work cur = pq.poll();
+            curT = cur.start;
 
-        list.sort(Comparator.comparingInt(w -> w.start));
+            if (pq.isEmpty()) {
+                ans.add(cur.name);
+                break;
+            }
+            Work next = pq.peek();
+            int gap = next.start - curT;
 
-        Stack<Work> stack = new Stack<>();
-        List<String> result = new ArrayList<>();
-        int currentTime;
-
-        for (int i = 0; i < list.size(); i++) {
-            Work current = list.get(i);
-            currentTime = current.start;
-
-            int nextStart = (i + 1 < list.size()) ? list.get(i + 1).start : Integer.MAX_VALUE;
-            int availableTime = nextStart - currentTime;
-
-            if (current.remain <= availableTime) {
-                result.add(current.name);
-                int freeTime = availableTime - current.remain;
-
-                while (!stack.isEmpty() && freeTime > 0) {
-                    Work prev = stack.pop();
-                    if (prev.remain <= freeTime) {
-                        freeTime -= prev.remain;
-                        result.add(prev.name);
+            if (cur.run > gap) {
+                cur.run -= gap;
+                wait.offerLast(cur);
+            } else {
+                ans.add(cur.name);
+                curT += cur.run;
+                int remainTime = gap - cur.run;
+                while (!wait.isEmpty() && remainTime > 0) {
+                    Work w = wait.pollLast();
+                    if (w.run > remainTime) {
+                        w.run -= remainTime;
+                        wait.offerLast(w);
+                        break;
                     } else {
-                        prev.remain -= freeTime;
-                        stack.push(prev);
-                        freeTime = 0;
+                        remainTime -= w.run;
+                        ans.add(w.name);
                     }
                 }
-
-            } else {
-                current.remain -= availableTime;
-                stack.push(current);
             }
         }
-
-        while (!stack.isEmpty()) {
-            result.add(stack.pop().name);
+        
+        while (!wait.isEmpty()) {
+            ans.add(wait.pollLast().name);
         }
-
-        return result.toArray(new String[0]);
+        
+        return ans.toArray(new String[0]);
     }
 }
