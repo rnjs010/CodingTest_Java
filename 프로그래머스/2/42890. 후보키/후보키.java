@@ -1,34 +1,33 @@
 import java.util.*;
 
 class Solution {
+    int row, col;
+    List<Integer> candidate = new ArrayList<>();
+    
     public int solution(String[][] relation) {
-        int row = relation.length;
-        int col = relation[0].length;
-        List<Integer> candidateKeys = new ArrayList<>();
-
-        for (int bit = 1; bit < (1 << col); bit++) {
-            if (!isMinimal(bit, candidateKeys)) continue;
-
-            if (isUnique(bit, relation, row, col)) {
-                candidateKeys.add(bit);
+        row = relation.length;
+        col = relation[0].length;
+        
+        for (int i = 1; i < (1 << col); i++) {
+            if (!minimality(i)) continue;
+            
+            if (uniqueness(relation, i)) {
+                candidate.add(i);
             }
         }
-
-        return candidateKeys.size();
+        
+        return candidate.size();
     }
-
-    private boolean isMinimal(int bit, List<Integer> candidateKeys) {
-        for (int key : candidateKeys) {
-            if ((key & bit) == key) {
-                return false;
-            }
+    
+    private boolean minimality(int bit) {
+        for (int key: candidate) {
+            if ((key & bit) == key) return false;
         }
         return true;
     }
-
-    private boolean isUnique(int bit, String[][] relation, int row, int col) {
+    
+    private boolean uniqueness(String[][] relation, int bit) {
         Set<String> set = new HashSet<>();
-
         for (int i = 0; i < row; i++) {
             StringBuilder sb = new StringBuilder();
             for (int j = 0; j < col; j++) {
@@ -38,7 +37,6 @@ class Solution {
             }
             set.add(sb.toString());
         }
-
         return set.size() == row;
     }
 }
