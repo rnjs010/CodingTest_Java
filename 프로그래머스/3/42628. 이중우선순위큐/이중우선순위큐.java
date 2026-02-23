@@ -13,7 +13,7 @@ class Solution {
             if (s[0].equals("I")) {
                 maxPQ.add(num);
                 minPQ.add(num);
-                map.put(num, map.getOrDefault(map.get(num), 0) + 1);
+                map.put(num, map.getOrDefault(num, 0) + 1);
             } else if (s[0].equals("D") && num == 1) {
                 while(!maxPQ.isEmpty() && map.get(maxPQ.peek()) == 0) {
                     maxPQ.poll();
