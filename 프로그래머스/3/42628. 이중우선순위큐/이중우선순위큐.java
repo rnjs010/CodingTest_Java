@@ -7,42 +7,20 @@ class Solution {
         Map<Integer, Integer> map = new HashMap<>();
         
         for (String str: operations) {
-            String[] s = str.split(" ");
-            int num = Integer.parseInt(s[1]);
-            
-            if (s[0].equals("I")) {
+            if (str.charAt(0) == 'I') {
+                int num = Integer.parseInt(str.substring(2));
                 maxPQ.add(num);
                 minPQ.add(num);
-                map.put(num, map.getOrDefault(num, 0) + 1);
-            } else if (s[0].equals("D") && num == 1) {
-                while(!maxPQ.isEmpty() && map.get(maxPQ.peek()) == 0) {
-                    maxPQ.poll();
-                }
-                if (!maxPQ.isEmpty()) {
-                    int n = maxPQ.poll();
-                    map.put(n, map.get(n) - 1);
-                }
-            } else {
-                while(!minPQ.isEmpty() && map.get(minPQ.peek()) == 0) {
-                    minPQ.poll();
-                }
-                if (!minPQ.isEmpty()) {
-                    int n = minPQ.poll();
-                    map.put(n, map.get(n) - 1);
-                }
+            } else if (str.equals("D 1") && !maxPQ.isEmpty()) {
+                minPQ.remove(maxPQ.poll());
+            } else if (str.equals("D -1") && !minPQ.isEmpty()) {
+                maxPQ.remove(minPQ.poll());
             }
         }
         
         int[] answer = new int[2];
-        while(!maxPQ.isEmpty() && map.get(maxPQ.peek()) == 0) {
-            maxPQ.poll();
-        }
-        while(!minPQ.isEmpty() && map.get(minPQ.peek()) == 0) {
-            minPQ.poll();
-        }
         if (!maxPQ.isEmpty()) {
-            answer[0] = maxPQ.peek();
-            answer[1] = minPQ.peek();
+            answer = new int[]{maxPQ.peek(), minPQ.peek()};
         }
         return answer;
     }
