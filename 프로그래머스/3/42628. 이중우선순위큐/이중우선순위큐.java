@@ -2,26 +2,37 @@ import java.util.*;
 
 class Solution {
     public int[] solution(String[] operations) {
-        Queue<Integer> maxPQ = new PriorityQueue<>(Collections.reverseOrder());
-        Queue<Integer> minPQ = new PriorityQueue<>();
-        Map<Integer, Integer> map = new HashMap<>();
+        TreeMap<Integer, Integer> map = new TreeMap<>();
         
         for (String str: operations) {
+            int value = Integer.parseInt(str.substring(2));
             if (str.charAt(0) == 'I') {
-                int num = Integer.parseInt(str.substring(2));
-                maxPQ.add(num);
-                minPQ.add(num);
-            } else if (str.equals("D 1") && !maxPQ.isEmpty()) {
-                minPQ.remove(maxPQ.poll());
-            } else if (str.equals("D -1") && !minPQ.isEmpty()) {
-                maxPQ.remove(minPQ.poll());
+                map.put(value, map.getOrDefault(value, 0) + 1);
+                continue;
+            } 
+            
+            if (map.isEmpty()) continue;
+            if (value == 1) {
+                delete(map, map.lastKey()); 
+            } else {
+                delete(map, map.firstKey());
             }
         }
         
         int[] answer = new int[2];
-        if (!maxPQ.isEmpty()) {
-            answer = new int[]{maxPQ.peek(), minPQ.peek()};
+        if (!map.isEmpty()) {
+            answer[0] = map.lastKey();
+            answer[1] = map.firstKey();
         }
         return answer;
+    }
+    
+    private void delete(TreeMap<Integer, Integer> map, int key) {
+        int count = map.get(key);
+        if (count == 1) {
+            map.remove(key);
+        } else {
+            map.put(key, count - 1);
+        }
     }
 }
