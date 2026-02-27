@@ -11,10 +11,8 @@ class Solution {
             if (A[a] < B[b]) {
                 answer++;
                 a++;
-                b++;
-            } else {
-                b++;
             }
+            b++;
         }
         
         return answer;
