@@ -1,19 +1,18 @@
 import java.util.*;
 
 class Solution {
-    public int solution(int[][] routes) {        
-        Arrays.sort(routes, (a, b) -> a[1] - b[1]);
-        int val = -30001;
-        int answer = 0;
-        for (int i = 0; i < routes.length; i++) {
-            if (val >= routes[i][0]) {
-                continue;
-            } else {
-                val = routes[i][1];
-                answer++;
+    public int solution(int[][] routes) {
+        Arrays.sort(routes, (a, b) -> Integer.compare(a[1], b[1]));
+        int camera = Integer.MIN_VALUE;
+        int count = 0;
+
+        for (int[] route : routes) {
+            if (camera < route[0]) {
+                camera = route[1];
+                count++;
             }
         }
-        
-        return answer;
+
+        return count;
     }
 }
