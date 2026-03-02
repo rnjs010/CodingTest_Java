@@ -4,16 +4,17 @@ class Solution {
         int start = 1;
         int range = w * 2 + 1;
         for (int s: stations) {
-            int cnt = s - w - start;
+            int left = s - w;
+            if (start < left) {
+                int gap = left - start;
+                answer += (gap + range - 1) / range;  // 올림 나눗셈 공식 적용
+            }
             start = s + w + 1;
-            if (cnt < 0) continue;
-            answer += cnt / range;
-            if (cnt % range != 0) answer++;
         }
+        
         if (start <= n) {
-            int cnt = n - start + 1;
-            answer += cnt / range;
-            if (cnt % range != 0) answer++;
+            int gap = n - start + 1;
+            answer += (gap + range - 1) / range;
         }
 
         return answer;
