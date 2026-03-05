@@ -1,25 +1,11 @@
-/* dfs, set */
+/* 비트마스킹 */
 import java.util.*;
 
 class Solution {
-    Set<String> result = new HashSet<>();
-    List<String> temp = new ArrayList<>();
-    int len;
-    List<String>[] candidates;
-    
+    Set<Integer> result = new HashSet<>();
+
     public int solution(String[] user_id, String[] banned_id) {
-        len = banned_id.length;
-        candidates = new ArrayList[len];
-        for (int i = 0; i < len; i++) {
-            candidates[i] = new ArrayList<>();
-            for (int j = 0; j < user_id.length; j++) {
-                if (possible(banned_id[i], user_id[j])) {
-                    candidates[i].add(user_id[j]);
-                }
-            }
-        }
-        
-        dfs(0);
+        dfs(0, 0, banned_id, user_id);
         return result.size();
     }
     
@@ -35,23 +21,17 @@ class Solution {
         return true;
     }
     
-    private void dfs(int depth) {
-        if (depth == len) {
-            List<String> list = new ArrayList<>(temp);
-            Collections.sort(list);
-            StringBuilder sb = new StringBuilder();
-            for (String s: list) {
-                sb.append(s).append("|");
-            }
-            result.add(sb.toString());
+    private void dfs(int depth, int mask, String[] ban, String[] user) {
+        if (depth == ban.length) {
+            result.add(mask);
             return;
         }
         
-        for (String id: candidates[depth]) {
-            if (temp.contains(id)) continue;
-            temp.add(id);
-            dfs(depth + 1);
-            temp.remove(temp.size() - 1);
+        for (int i = 0; i < user.length; i++) {
+            if ((mask & (1 << i)) != 0) continue;
+            if (possible(ban[depth], user[i])) {
+                dfs(depth + 1, mask | (1 << i), ban, user);
+            }
         }
     }
 }
