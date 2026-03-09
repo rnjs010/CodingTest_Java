@@ -1,39 +1,35 @@
 class Solution {
     public int solution(int[] stones, int k) {
-        int left = 1;
-        int right = 0;
-        for (int stone : stones) {
-            right = Math.max(right, stone);
-        }
-
         int answer = 0;
-        while (left <= right) {
-            int mid = (left + right) / 2;
-
-            if (canCross(stones, k, mid)) {
-                answer = mid;
-                left = mid + 1;
-            } else {
-                right = mid - 1;
-            }
+        int l = 1, r = 0;
+        for (int s: stones) {
+            r = Math.max(r, s);
         }
-
-        return answer;
-    }
-
-    private boolean canCross(int[] stones, int k, int people) {
-        int count = 0;
-        for (int stone : stones) {
-            if (stone - people < 0) {
-                count++;
-                if (count >= k) {
-                    return false;
+        
+        while (l <= r) {
+            int mid = (l + r) / 2;
+            int cnt = 0;
+            boolean check = true;
+            for (int s: stones) {
+                if (s - mid < 0){ 
+                    cnt++;
+                    if (cnt >= k) {
+                        check = false;
+                        break;
+                    }
+                } else {
+                    cnt = 0;
                 }
+            }
+            
+            if (check) {
+                answer = Math.max(answer, mid);
+                l = mid + 1;
             } else {
-                count = 0;
+                r = mid - 1;
             }
         }
-
-        return true;
+        
+        return answer;
     }
 }
