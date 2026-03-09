@@ -1,32 +1,27 @@
+import java.util.*;
+
 class Solution {
     public int solution(int[] stones, int k) {
-        int answer = 0;
-        int l = 1, r = 0;
-        for (int s: stones) {
-            r = Math.max(r, s);
-        }
+        // 앞 -> 최대값의 인덱스, 뒤 -> 작은값의 인덱스
+        Deque<Integer> dq = new ArrayDeque<>();
+        int answer = Integer.MAX_VALUE;
         
-        while (l <= r) {
-            int mid = (l + r) / 2;
-            int cnt = 0;
-            boolean check = true;
-            for (int s: stones) {
-                if (s - mid < 0){ 
-                    cnt++;
-                    if (cnt >= k) {
-                        check = false;
-                        break;
-                    }
-                } else {
-                    cnt = 0;
-                }
+        for (int i = 0; i < stones.length; i++) {
+            // 윈도우 벗어난 인덱스 제거
+            if (!dq.isEmpty() && dq.peekFirst() <= i - k) {
+                dq.pollFirst();
             }
             
-            if (check) {
-                answer = Math.max(answer, mid);
-                l = mid + 1;
-            } else {
-                r = mid - 1;
+            // 현재 값보다 작은 값 뒤에서 제거
+            while (!dq.isEmpty() && stones[dq.peekLast()] <= stones[i]) {
+                dq.pollLast();
+            }
+            
+            dq.addLast(i);
+            
+            // 윈도우 완성         
+            if (i >= k - 1) {
+                answer = Math.min(answer, stones[dq.peekFirst()]);
             }
         }
         
