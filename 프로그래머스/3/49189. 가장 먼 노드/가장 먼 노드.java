@@ -1,9 +1,10 @@
+// 레벨 BFS → 마지막 level size = answer
 import java.util.*;
 
 class Solution {
     public int solution(int n, int[][] edge) {
         List<Integer>[] graph = new ArrayList[n + 1];
-        for (int i = 0; i < n + 1; i++) {
+        for (int i = 1; i <= n; i++) {
             graph[i] = new ArrayList<>();
         }
         
@@ -13,27 +14,25 @@ class Solution {
             graph[b].add(a);
         }
         
-        int[] dist = new int[n + 1];
-        Arrays.fill(dist, Integer.MAX_VALUE);
-        Deque<Integer> dq = new ArrayDeque<>();
-        dist[1] = 0;
-        dq.addLast(1);
-        
-        int val = 0;
-        while (!dq.isEmpty()) {
-            int cur = dq.pollFirst();
-            for (int next: graph[cur]) {
-                if (dist[next] == Integer.MAX_VALUE) {
-                    dist[next] = dist[cur] + 1;
-                    val = Math.max(dist[next], val);
-                    dq.addLast(next);
-                }
-            }
-        }
+        Queue<Integer> dq = new ArrayDeque<>();
+        boolean[] visit = new boolean[n + 1];
+        dq.offer(1);
+        visit[1] = true;
         
         int answer = 0;
-        for (int d: dist) {
-            if (d == val) answer++;
+        while (!dq.isEmpty()) {
+            int size = dq.size();
+            answer = size;
+            
+            for (int i = 0; i < size; i++) {
+                int cur = dq.poll();
+                for (int next: graph[cur]) {
+                if (!visit[next]) {
+                    visit[next] = true;
+                    dq.offer(next);
+                    }
+                }
+            }
         }
         
         return answer;
