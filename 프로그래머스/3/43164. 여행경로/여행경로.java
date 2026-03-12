@@ -1,16 +1,15 @@
 import java.util.*;
 
 class Solution {
-    String[] temp;
+    String[][] tickets;
+    String[] path;
     boolean[] use;
     int n;
-    String[][] tickets;
-    String[] answer = {};
-    boolean check = false;
     
     public String[] solution(String[][] tickets) {
         n = tickets.length;
-        temp = new String[n + 1];
+        path = new String[n + 1];
+        use = new boolean[n];
         
         Arrays.sort(tickets, (a, b) -> {
             if (a[0].equals(b[0]))
@@ -19,36 +18,26 @@ class Solution {
         });
         
         this.tickets = tickets;
-        
-        for (int i = 0; i < n; i++) {
-            use = new boolean[n];
-            if (tickets[i][0].equals("ICN")) {
-                use[i] = true;
-                temp[0] = tickets[i][0];
-                temp[1] = tickets[i][1];
-                dfs(2, tickets[i]);
-                if (check) break;
-            }
-        }
-        
-        return answer;
+        path[0] = "ICN";
+        dfs(0, "ICN");
+        return path;
     }
     
-    public void dfs(int depth, String[] t) {
-        if (check) return;
-        if (depth == n + 1) {
-            answer = temp.clone();
-            check = true;
-            return;
+    public boolean dfs(int depth, String cur) {
+        if (depth == n) {
+            return true;
         }
         
         for (int i = 0; i < n; i++) {
-            if (t[1].equals(tickets[i][0]) && !use[i]) {
-                temp[depth] = tickets[i][1];
+            if (cur.equals(tickets[i][0]) && !use[i]) {
+                path[depth + 1] = tickets[i][1];
                 use[i] = true;
-                dfs(depth + 1, tickets[i]);
+                if (dfs(depth + 1, tickets[i][1])) {
+                    return true;
+                }
                 use[i] = false;
             }
         }
+        return false;
     }
 }
