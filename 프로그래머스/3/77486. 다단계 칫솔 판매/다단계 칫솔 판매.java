@@ -1,3 +1,5 @@
+// 첫 풀이 시간 초과 이유 (while문마다 객체 생성, 문자열 HashMap 접근 반복)
+// -> 인덱스 기반으로 변경
 import java.util.*;
 
 class Solution {
