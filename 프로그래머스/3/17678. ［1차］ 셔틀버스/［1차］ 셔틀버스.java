@@ -9,28 +9,21 @@ class Solution {
         }
         Arrays.sort(crew);
         
-        int[] bus = new int[n];
-        for (int i = 0; i < n; i++) {
-            bus[i] = 540 + (i * t);
-        }
-        
         int cIdx = 0;
         int total = 0;
+        int lastB = 0;
         for (int i = 0; i < n; i++) {
+            int busT = 540 + (i * t);
+            lastB = busT;
             total = 0;
-            for (int x = 0; x < m; x++) {
-                if (cIdx < people && bus[i] >= crew[cIdx]) {
-                    cIdx++;
-                    total++;
-                }
+            while (cIdx < people && busT >= crew[cIdx] && total < m) {
+                cIdx++;
+                total++;
             }
         }
         
-        int ans = (total != m) ? bus[n - 1] : crew[cIdx - 1] - 1; 
-        String hh = String.format("%02d", ans / 60);
-        String mm = String.format("%02d", ans % 60);
-        String answer = hh + ":" + mm;
-        return answer;
+        int ans = (total < m) ? lastB : crew[cIdx - 1] - 1; 
+        return String.format("%02d:%02d", ans / 60, ans % 60);
     }
     
     public int changeT(String t) {
