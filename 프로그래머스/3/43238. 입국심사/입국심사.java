@@ -1,8 +1,9 @@
+// 이분탐색
 class Solution {
     public long solution(int n, int[] times) {
-        long l = 1;
-        long r = 0;
+        long l = Long.MAX_VALUE, r = 0;
         for (int t: times) {
+            l = Math.min(l, t);
             r = Math.max(r, t);
         }
         r *= n;
